@@ -1,24 +1,27 @@
 #!/usr/bin/env node
-import { mkdir } from "fs";
+import fs from "fs-extra";
+import { exec } from "child_process";
 import { validateURLs } from "./lib/helpers.js";
 import compare from "./lib/compare.js";
 import generateHTML from "./lib/template.js";
 import allPaths from "./lib/pathnames.js";
 
-mkdir("diffs", { recursive: true }, function (err) {
-  if (err) throw err;
-});
+fs.emptyDirSync("diffs");
 validateURLs();
 
 console.log(`🆗 Comparing ${process.env.BASE_URL} and ${process.env.TEST_URL}`);
-
 console.time("visual comparison");
-const results = await Promise.all(allPaths.flatMap(path => [
-  compare({ path, viewport: "full", baseUrl: process.env.BASE_URL, testUrl: process.env.TEST_URL }),
-  compare({ path, viewport: "mobile", baseUrl: process.env.BASE_URL, testUrl: process.env.TEST_URL })
-]));
+// const allPaths = ["/"];
+const results = await Promise.all(allPaths.flatMap(path => {
+  console.log("comparing", path);
+  return [
+    compare({ path, viewport: "full", baseUrl: process.env.BASE_URL, testUrl: process.env.TEST_URL }),
+    compare({ path, viewport: "mobile", baseUrl: process.env.BASE_URL, testUrl: process.env.TEST_URL })
+  ];
+}));
 console.timeEnd("visual comparison");
-
+// console.log("results", results);
 console.time("report generation");
-generateHTML(results);
+await generateHTML(results.filter(r => !!r)); // remove null results first
 console.timeEnd("report generation");
+exec("open report.html");

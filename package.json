@@ -1,17 +1,15 @@
 {
-  "name": "comparecrawl",
-  "version": "1.0.0",
-  "description": "",
+  "name": "dotcom-compare",
+  "version": "0.1.0",
+  "description": "CLI script to generate diffs for visual regression testing on MBTA.com",
+  "private": "true",
   "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "bin": "index.js",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Cristen Jones <cjones3@mbta.com>",
   "dependencies": {
-    "looks-same": "^8.1.0",
+    "fs-extra": "^11.1.0",
+    "jimp": "^0.16.2",
     "mustache": "^4.2.0",
     "playwright": "^1.27.1"
   },
